@@ -1,0 +1,68 @@
+<html>
+<body>
+    <input type="file" id="input" multiple />
+    <div id="solution"></div>
+    <script>
+         document.getElementById('input').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const input = e.target.result;
+                        main(input);
+
+                    } catch (error) {
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                console.error('No file selected');
+            }
+        });
+
+        function main(input) {
+            console.log(input);
+            let solution = 0;
+            const reports = input.split(/\r\n/)
+            console.log(reports);
+            loop1: 
+            for(let i = 0; i < reports.length; i++){
+                const levels = reports[i].split(' ');
+                if(!checkReport(levels)){
+                    for(let k = 0; k < levels.length; k++){
+                        let temp = [...levels];
+                        temp.splice(k,1);
+                        if(checkReport(temp)){
+                            solution++;
+                            console.log(levels);
+                            console.log(k);
+                            console.log(temp);
+                            console.log('==============================================');
+                            continue loop1;
+                        }
+                    }
+                    continue loop1;
+                }
+                solution++;
+            };
+            console.log(solution);
+            document.getElementById("solution").innerHTML = solution;
+        }
+
+        function checkReport(levels){
+            const delta = [];
+                for(let j = 0; j < levels.length - 1; j++){
+                    delta[j] = levels[j] - levels[j+1];
+                    if(Math.abs(delta[j]) > 3 || Math.abs(delta[j]) == 0){
+                        return false;
+                    }
+                }
+                if(delta.some((n) => n > 0) && delta.some((n) => n < 0)){
+                    return false;
+                }
+                return true;
+        }
+    </script>
+</body>
+</html>
