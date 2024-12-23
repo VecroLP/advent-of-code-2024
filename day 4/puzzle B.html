@@ -1,0 +1,86 @@
+<html>
+<body>
+    <input type="file" id="input" multiple />
+    <div id="solution"></div>
+    <script>
+         document.getElementById('input').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const input = e.target.result;
+                        main(input);
+
+                    } catch (err) {
+                        console.log('error: ', err);
+                    }
+                };
+                reader.readAsText(file);
+            } else {
+                console.error('No file selected');
+            }
+        });
+
+        function padding(length) {
+            return ".".repeat(length);
+        }
+
+        function main(input) {
+            console.log(input);
+            let solution = 0;
+
+            // code here
+            rows = input.split(/\r\n/)
+            rows = rows.map((row) => 
+                padding(1) + row + padding(1)
+            );
+            console.log(rows);
+            rows.unshift(padding(rows[0].length));
+            rows.push(padding(rows[0].length));
+            for(let i = 1; i < rows.length-1; i++){
+                console.log("rows: ", rows.length);
+                for(let j = 1; j < rows[i].length-1; j++){
+                    console.log("letter: ", rows[j][i]);
+                    console.log('i: ', i);
+                    console.log('j: ', j);
+                    if(rows[j][i] === 'A'){
+                        console.log('A found');
+                        //west 
+                        console.log('1')
+                        if(rows[j-1][i-1]==='M'&&rows[j+1][i+1]==='S'&&rows[j-1][i+1]==='M'&&rows[j+1][i-1]==='S'){
+                            console.log('1a')
+                            solution++;
+                            console.log('W');
+                        }
+                        //south west
+                        console.log('2')
+                        if(rows[j-1][i-1]==='S'&&rows[j+1][i+1]==='M'&&rows[j-1][i+1]==='M'&&rows[j+1][i-1]==='S'){
+                            console.log('2a')
+                            solution++;
+                            console.log('SW');
+                        }
+                        //south
+                        console.log('3')
+                        if(rows[j-1][i-1]==='M'&&rows[j+1][i+1]==='S'&&rows[j-1][i+1]==='S'&&rows[j+1][i-1]==='M'){
+                            console.log('3a')
+                            solution++;
+                            console.log('S');
+                        }
+                        //south east
+                        console.log('4')
+                        if(rows[j-1][i-1]==='S'&&rows[j+1][i+1]==='M'&&rows[j-1][i+1]==='S'&&rows[j+1][i-1]==='M'){
+                            console.log('4a')
+                            solution++;
+                            console.log('SE');
+                        }
+                    } 
+                    console.log('==================')
+                }
+            }
+            
+            document.getElementById("solution").innerHTML = solution;
+        }
+    </script>
+</body>
+</html>
