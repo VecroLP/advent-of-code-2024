@@ -1,0 +1,94 @@
+<html>
+    <body>
+        <input type="file" id="input" multiple />
+        <div id="solution"></div>
+        <script>
+            String.prototype.replaceAt = function (index, replacement) {
+                return this.substring(0, index) + replacement + this.substring(index + 1);
+            };
+
+            document.getElementById("input").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const input = e.target.result;
+                            main(input);
+                        } catch (error) {}
+                    };
+                    reader.readAsText(file);
+                } else {
+                    console.error("No file selected");
+                }
+            });
+
+            function rotate(dir) {
+                return (dir + 1) % 4;
+            }
+
+            async function main(input) {
+                console.log(input);
+                let solution = 0;
+                input = input.split(/\r\n/);
+
+                let dir = 0; //0=north, 1=east, 2=south, 3=west
+                let guardX = -1;
+                let guardY = -1;
+
+                for (let X = 0; X < input.length; X++) {
+                    for (let Y = 0; Y < input[X].length; Y++) {
+                        if (input[Y][X] === "^") {
+                            guardX = X;
+                            guardY = Y;
+                        }
+                    }
+                }
+
+                while (guardX > 0 && guardX < input.length && guardY > 0 && guardY < input[0].length) {
+                    input[guardY] = input[guardY].replaceAt(guardX, "X");
+                    try {
+                        switch (dir) {
+                            case 0:
+                                if (input[guardY - 1][guardX] == "#") {
+                                    dir = rotate(dir);
+                                } else {
+                                    guardY--;
+                                }
+                                break;
+                            case 1:
+                                if (input[guardY][guardX + 1] == "#") {
+                                    dir = rotate(dir);
+                                } else {
+                                    guardX++;
+                                }
+                                break;
+                            case 2:
+                                if (input[guardY + 1][guardX] == "#") {
+                                    dir = rotate(dir);
+                                } else {
+                                    guardY++;
+                                }
+                                break;
+                            case 3:
+                                if (input[guardY][guardX - 1] == "#") {
+                                    dir = rotate(dir);
+                                } else {
+                                    guardX--;
+                                }
+                                break;
+                        }
+                    } catch {
+                        break;
+                    }
+                }
+
+                let regex = /X/gm;
+                solution = input.join("").match(regex).length;
+
+                document.getElementById("solution").innerHTML = solution;
+                console.log(solution);
+            }
+        </script>
+    </body>
+</html>

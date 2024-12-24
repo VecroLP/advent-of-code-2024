@@ -1,0 +1,103 @@
+<html>
+    <body>
+        <input type="file" id="input" multiple />
+        <div id="solution"></div>
+        <script>
+            String.prototype.replaceAt = function (index, replacement) {
+                return this.substring(0, index) + replacement + this.substring(index + 1);
+            };
+
+            document.getElementById("input").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const input = e.target.result;
+                            main(input);
+                        } catch (error) {}
+                    };
+                    reader.readAsText(file);
+                } else {
+                    console.error("No file selected");
+                }
+            });
+
+            function rotate(dir) {
+                return (dir + 1) % 4;
+            }
+
+            async function main(input) {
+                console.log(input);
+                let solution = 0;
+                input = input.split(/\r\n/);
+                let counter = 0;
+
+                for (let inputX = 0; inputX < input[0].length; inputX++) {
+                    for (let inputY = 0; inputY < input.length; inputY++) {
+                        if (input[inputY][inputX] === ".") {
+                            counter++;
+                            console.log("currently testing option ", counter);
+                            let testInput = input.map((row) => row.slice());
+                            testInput[inputY] = testInput[inputY].replaceAt(inputX, "0");
+
+                            let dir = 0; // 0=north, 1=east, 2=south, 3=west
+                            let guardX = -1;
+                            let guardY = -1;
+                            let loops = false;
+
+                            const visited = Array.from({ length: testInput.length }, () =>
+                                Array.from({ length: testInput[0].length }, () => [false, false, false, false])
+                            );
+
+                            for (let X = 0; X < testInput[0].length; X++) {
+                                for (let Y = 0; Y < testInput.length; Y++) {
+                                    if (testInput[Y][X] === "^") {
+                                        guardX = X;
+                                        guardY = Y;
+                                        testInput[Y] = testInput[Y].replaceAt(X, ".");
+                                    }
+                                }
+                            }
+
+                            const directions = [
+                                { dx: 0, dy: -1 }, // North
+                                { dx: 1, dy: 0 }, // East
+                                { dx: 0, dy: 1 }, // South
+                                { dx: -1, dy: 0 }, // West
+                            ];
+
+                            while (!loops) {
+                                const nextX = guardX + directions[dir].dx;
+                                const nextY = guardY + directions[dir].dy;
+
+                                if (nextX < 0 || nextX >= testInput[0].length || nextY < 0 || nextY >= testInput.length) break;
+
+                                const nextCell = testInput[nextY][nextX];
+
+                                if (nextCell === ".") {
+                                    guardX = nextX;
+                                    guardY = nextY;
+                                } else {
+                                    if (visited[guardY][guardX][dir]) {
+                                        loops = true;
+                                    } else {
+                                        visited[guardY][guardX][dir] = true;
+                                    }
+                                    dir = rotate(dir);
+                                }
+                            }
+
+                            if (loops) {
+                                solution++;
+                            }
+                        }
+                    }
+                }
+
+                document.getElementById("solution").innerHTML = solution;
+                console.log("Solution:", solution);
+            }
+        </script>
+    </body>
+</html>
