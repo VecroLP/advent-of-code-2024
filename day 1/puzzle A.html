@@ -1,51 +1,49 @@
 <html>
-<body>
-    <input type="file" id="input" multiple />
-    <div id="solution"></div>
-    <script>
-         document.getElementById('input').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const input = e.target.result;
-                        main(input);
+    <body>
+        <input type="file" id="input" multiple />
+        <div id="solution"></div>
+        <script>
+            document.getElementById("input").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const input = e.target.result;
+                            main(input);
+                        } catch (error) {}
+                    };
+                    reader.readAsText(file);
+                } else {
+                    console.error("No file selected");
+                }
+            });
 
-                    } catch (error) {
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                console.error('No file selected');
+            function main(input) {
+                console.log(input);
+                const listOne = [];
+                const listTwo = [];
+                const data = input.split(/   +|\r\n/);
+                console.log(data);
+                for (let i = 0; i < data.length; i = i + 2) {
+                    listOne.push(data[i]);
+                    listTwo.push(data[i + 1]);
+                }
+                console.log(listOne);
+                console.log(listTwo);
+
+                listOne.sort();
+                listTwo.sort();
+                console.log(listOne);
+                console.log(listTwo);
+
+                let solution = 0;
+                for (let i = 0; i < listOne.length; i++) {
+                    solution += Math.abs(listOne[i] - listTwo[i]);
+                }
+                console.log(solution);
+                document.getElementById("solution").innerHTML = solution;
             }
-        });
-
-        function main(input) {
-            console.log(input);
-            const listOne = [];
-            const listTwo = [];
-            const data = input.split(/   +|\r\n/)
-            console.log(data);
-            for(let i = 0; i < data.length; i = i+2){
-                listOne.push(data[i]);
-                listTwo.push(data[i+1]);
-            }
-            console.log(listOne);
-            console.log(listTwo);
-
-            listOne.sort();
-            listTwo.sort();
-            console.log(listOne);
-            console.log(listTwo);
-
-            let solution = 0;
-            for(let i = 0; i < listOne.length; i++){
-                solution += Math.abs(listOne[i] - listTwo[i]);
-            }
-            console.log(solution);
-            document.getElementById("solution").innerHTML = solution;
-        }
-    </script>
-</body>
+        </script>
+    </body>
 </html>

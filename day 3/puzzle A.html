@@ -1,39 +1,37 @@
 <html>
-<body>
-    <input type="file" id="input" multiple />
-    <div id="solution"></div>
-    <script>
-         document.getElementById('input').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const input = e.target.result;
-                        main(input);
+    <body>
+        <input type="file" id="input" multiple />
+        <div id="solution"></div>
+        <script>
+            document.getElementById("input").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const input = e.target.result;
+                            main(input);
+                        } catch (error) {}
+                    };
+                    reader.readAsText(file);
+                } else {
+                    console.error("No file selected");
+                }
+            });
 
-                    } catch (error) {
-                    }
-                };
-                reader.readAsText(file);
-            } else {
-                console.error('No file selected');
+            function main(input) {
+                console.log(input);
+                let solution = 0;
+
+                // code here
+                const regex = /mul\((\d+),(\d+)\)/gm;
+                while ((m = regex.exec(input)) !== null) {
+                    console.log(m);
+                    solution += m[1] * m[2];
+                }
+                // console.log(data);
+                document.getElementById("solution").innerHTML = solution;
             }
-        });
-
-        function main(input) {
-            console.log(input);
-            let solution = 0;
-
-            // code here
-            const regex = /mul\((\d+),(\d+)\)/gm;
-            while((m = regex.exec(input)) !== null){
-                console.log(m);
-                solution += m[1]*m[2];
-            }
-            // console.log(data);
-            document.getElementById("solution").innerHTML = solution;
-        }
-    </script>
-</body>
+        </script>
+    </body>
 </html>
