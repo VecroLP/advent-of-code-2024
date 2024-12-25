@@ -1,0 +1,83 @@
+<html>
+    <body>
+        <input type="file" id="input" multiple />
+        <div id="solution"></div>
+        <script>
+            document.getElementById("input").addEventListener("change", function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const input = e.target.result;
+                            main(input);
+                        } catch (error) {}
+                    };
+                    reader.readAsText(file);
+                } else {
+                    console.error("No file selected");
+                }
+            });
+
+            function calculate(numbers, opperators) {
+                let retval = numbers[0];
+                for (let i = 1; i < numbers.length; i++) {
+                    switch (opperators[i - 1]) {
+                        case "+":
+                            retval = retval + numbers[i];
+                            break;
+                        case "*":
+                            retval = retval * numbers[i];
+                            break;
+                        case "||":
+                            retval = parseInt(retval.toString() + "" + numbers[i].toString());
+                            break;
+                    }
+                }
+                return retval;
+            }
+
+            function generateCombinations(length) {
+                const results = [];
+                const generate = (current, pos) => {
+                    if (pos === length) {
+                        results.push(current.slice());
+                        return;
+                    }
+                    current[pos] = "+";
+                    generate(current, pos + 1);
+                    current[pos] = "*";
+                    generate(current, pos + 1);
+                    current[pos] = "||";
+                    generate(current, pos + 1);
+                };
+                generate([], 0);
+                return results;
+            }
+
+            function main(input) {
+                console.log(input);
+                let solution = 0;
+
+                input = input.split(/\r\n/);
+                console.log("a", input);
+                for (let i = 0; i < input.length; i++) {
+                    let answer = input[i].split(/\:\s/)[0];
+                    let numbers = input[i].split(/\:\s/)[1].split(" ");
+                    console.log("answer: ", answer);
+                    console.log("numbers: ", numbers);
+
+                    const combinations = generateCombinations(numbers.length - 1);
+                    for (const opps of combinations) {
+                        const result = calculate(numbers.map(Number), opps);
+                        if (result == answer) {
+                            solution += parseInt(answer);
+                            break;
+                        }
+                    }
+                }
+                document.getElementById("solution").innerHTML = solution;
+            }
+        </script>
+    </body>
+</html>
